@@ -47,9 +47,6 @@ public class LoginActivity extends AppCompatActivity {
         if (pref.getBoolean("remember_password",false)) {
            password.setText(pref.getString("password",""));
         }
-        if (!pref.getBoolean("remember_password", false)) {
-            ;
-        }
     }
 
     @Override
