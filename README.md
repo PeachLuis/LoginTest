@@ -1,3 +1,8 @@
+j
+
+[TOC]
+
+
 
 # 登录和注册功能app
 
@@ -101,19 +106,95 @@
 
 ### 1.实现退出登录活动后再进入可以记住账号
 
-按照第一行代码上的写法，无法实现，我暂时没有办法，在探索中
+可以采用SharedPreferences储存方法，编写一个save方法和一个read方法，再在代码中进行调用。
+
+但是考虑到活动的生命期，应该是将save方法放在登录按钮的点击事件当中，而read方法放在重写的onResume（）当中。
+
+save方法：
+
+```java
+private void save() {
+        SharedPreferences.Editor editor = getSharedPreferences("account_password",MODE_PRIVATE).edit();
+        editor.putString("account", account.getText().toString());
+        editor.putString("password", password.getText().toString());
+        editor.apply();
+    }
+```
+
+read方法：
+
+```java
+private void read() {
+        SharedPreferences pref = getSharedPreferences("account_password", MODE_PRIVATE);
+        account.setText(pref.getString("account", ""));
+        password.setText(pref.getString("password",""));
+    }
+```
+
+关于SharePreferences的更多知识请看这里：
+
+[传送门]: https://www.cnblogs.com/smyhvae/p/4019379.html
+
+
 
 ### 2.实现记住密码
 
-按照第一行代码上的写法，无法实现，我暂时没有办法，在探索中
+这里就在xml文件中添加复选框CheckBox，
 
-在
+```xml
+ <LinearLayout
+        android:id="@+id/linear_1"
+        android:layout_below="@id/password"
+        android:layout_alignLeft="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-```java
-String account = accountEdit.getText().toString();
-String password = passwordEdit.getText().toString();
+        <CheckBox
+            android:id="@+id/remember_pass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:text="记住密码"/>
+    </LinearLayout>
 ```
 
-这两行虽然不报错，但是Logcat显示在这里程序异常退出
+然后在save和read方法中添加逻辑
 
-在探索中
+```java
+public class LoginActivity extends AppCompatActivity {
+    private EditText account,password;
+    private CheckBox rememberPassword;
+    ...
+        
+    private void save() {
+        SharedPreferences.Editor editor = getSharedPreferences("account_password",MODE_PRIVATE).edit();
+        editor.putString("account", account.getText().toString());
+        editor.putString("password", password.getText().toString());
+        editor.putBoolean("remember_password", rememberPassword.isChecked());
+        editor.apply();
+    }
+    
+    private void read() {
+        SharedPreferences pref = getSharedPreferences("account_password", MODE_PRIVATE);
+        account.setText(pref.getString("account", ""));
+        if (pref.getBoolean("remember_password",false)) {
+           password.setText(pref.getString("password",""));
+        }
+    }
+
+```
+
+# 目前学习情况
+
+## java部分
+
+在看哈希表等一些数据结构，和一些集合框架
+
+## Android部分
+
+在看适配器Adapter部分，跟着还学着一些自带组件，还看了点自制的组件，比如说自制的圆形ImageView图像
